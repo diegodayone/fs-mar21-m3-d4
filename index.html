@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" placeholder="search..." onkeyup="search()" />
+    <h2 id="price"></h2>
+    <!-- <input type="button" onclick="search()" value="search" /> -->
+    <div id="books">
+
+    </div>
+    <!-- <input type="button" value="function" id="function" />
+    <input type="button" value="arrow" id="arrow" /> -->
+
+    <script>
+
+        let bookCatalogue = []
+
+        window.onload = () => {
+            fetch("https://striveschool-api.herokuapp.com/books")
+                .then(resp => resp.json())
+                .then(books => {
+                    bookCatalogue = books
+                   renderBooks(books)
+                })
+        }
+
+        function renderBooks(booksToBeRendered) {
+            const myDiv = document.getElementById("books")
+            myDiv.innerHTML = booksToBeRendered.map(book => 
+                    `<div>
+                        <img src="${book.img}" width="120" height="120" />
+                        <p> ${book.title} </p>
+                    </div>`)
+                    .join("")
+            
+            const myPrice = document.getElementById("price")
+            myPrice.innerText = booksToBeRendered.reduce((acc, curr) => acc + curr.price, 0)
+        }
+
+        function search() {
+            // take the value from my input field
+            let searchQuery = document.querySelector("input[type=text]").value.toLowerCase()
+            // retrieve the information from the apis => BAD! 
+            if (searchQuery.length === 0)
+                renderBooks(bookCatalogue)
+            else {
+                const filteredBooks = bookCatalogue.filter(book => book.title.toLowerCase().includes(searchQuery))
+                console.log(filteredBooks)
+                // filter the books based on the title
+                // show only the pitcures of the books that match the title
+                renderBooks(filteredBooks)
+            }
+        }
+
+//    bookCatalogue.reduce((acc, curr) => {
+//    if (curr.price >10) {
+//         acc.over10.push(curr)
+//    }
+//    else {
+//         acc.lowerThen10.push(curr)
+//    }
+
+//    return acc
+
+// }, {
+//   over10: [],
+//   lowerThen10: []
+// })
+
+    //     const myObject = {
+    //         name:"test",
+    //         myArray: [1,2,3],
+    //         myMethod() {
+    //             console.log("myMethod function scope", this)
+    //             this.myArray.forEach(arrayItem => console.log("A " + this.name + " =>  " + arrayItem))
+    //             this.myArray.forEach(function(arrayItem) {console.log("F " + this.name + " =>  " + arrayItem )})
+    //             // const f = () => {
+    //             //     console.log("INTO THE ARROW", this)
+    //             //     console.log(this.name);
+    //             // }
+    //             // f()
+
+    //             // const f2 = function (){
+    //             //     console.log("INTO THE FUNCTION", this)
+    //             //     console.log(this.name)
+    //             // }
+    //             // f2()
+    //         }
+    //     }
+    
+    // document.getElementById("function").addEventListener("click", function() {
+    //     console.log(this)
+    //     this.style.border = "10px solid green"
+    // })
+    // document.getElementById("arrow").addEventListener("click", (ev) => {
+    //     console.log(this)
+    //     console.log(ev)
+    //     ev.currentTarget.style.border = "10px solid green"
+    //     if(true){
+    //        var x = 10
+    //     }
+    //     else{
+    //     }
+    //     console.log(x)
+    // })
+    
+    </script>
+</body>
+</html>
